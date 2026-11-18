@@ -20,7 +20,6 @@
     <Version>1.0.0</Version>
     <Authors>Flash2Fa</Authors>
     <Description>High-performance, zero-dependency, zero-allocation, 100% Native AOT 2FA library for .NET 10+ (TOTP RFC 6238, SVG/PNG QR codes, and SHA-256 recovery codes).</Description>
-    <PackageTags>2fa;totp;qrcode;aot;security;authentication</PackageTags>
     <PackageTags>2fa;totp;qrcode;svg;png;aot;nativeaot;zero-allocation;security;authentication</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -28,7 +27,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PackageProjectUrl>hhttps://github.com/JetonpecheCorp/Flash2Fa</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/JetonpecheCorp/Flash2Fa</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JetonpecheCorp/Flash2Fa.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
@@ -41,7 +40,7 @@
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <!-- Exposition des internes uniquement pour nos tests unitaires -->
+  <!-- Exposition des internes uniquement pour les tests unitaires -->
   <ItemGroup>
     <InternalsVisibleTo Include="Flash2Fa.Tests" />
   </ItemGroup>
