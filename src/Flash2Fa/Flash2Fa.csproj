@@ -28,9 +28,9 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- <PackageProjectUrl>https://github.com/VOTRE_COMPTE/Flash2Fa</PackageProjectUrl> -->
-    <!-- <RepositoryUrl>https://github.com/VOTRE_COMPTE/Flash2Fa.git</RepositoryUrl> -->
-    <!-- <RepositoryType>git</RepositoryType> -->
+    <PackageProjectUrl>hhttps://github.com/JetonpecheCorp/Flash2Fa</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JetonpecheCorp/Flash2Fa.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
