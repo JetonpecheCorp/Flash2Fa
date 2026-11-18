@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Garanties 100% Native AOT & Trimming -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- Qualité & Documentation NuGet -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Flash2Fa</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Flash2Fa</Authors>
+    <Description>High-performance, zero-dependency, zero-allocation, 100% Native AOT 2FA library for .NET 10+ (TOTP RFC 6238, SVG/PNG QR codes, and SHA-256 recovery codes).</Description>
+    <PackageTags>2fa;totp;qrcode;aot;security;authentication</PackageTags>
+    <PackageTags>2fa;totp;qrcode;svg;png;aot;nativeaot;zero-allocation;security;authentication</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- <PackageProjectUrl>https://github.com/VOTRE_COMPTE/Flash2Fa</PackageProjectUrl> -->
+    <!-- <RepositoryUrl>https://github.com/VOTRE_COMPTE/Flash2Fa.git</RepositoryUrl> -->
+    <!-- <RepositoryType>git</RepositoryType> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Exposition des internes uniquement pour nos tests unitaires -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Flash2Fa.Tests" />
+  </ItemGroup>
+
+</Project>

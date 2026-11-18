@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Flash2Fa.Benchmarks/Flash2Fa.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Flash2Fa/Flash2Fa.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Flash2Fa.AotSmokeTest/Flash2Fa.AotSmokeTest.csproj" />
+    <Project Path="tests/Flash2Fa.Tests/Flash2Fa.Tests.csproj" />
+  </Folder>
+</Solution>
