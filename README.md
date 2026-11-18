@@ -6,9 +6,11 @@
 [![Zero Allocation](https://img.shields.io/badge/Allocation-0%20B%20Hot%20Path-orange)](#benchmarks--performances)
 [![RFC 6238](https://img.shields.io/badge/RFC-6238%20%2F%204226-lightgrey)](#)
 
-**Flash2Fa** est une bibliothèque .NET moderne, ultra-rapide et sans aucune dépendance externe pour intégrer l'authentification à deux facteurs (**2FA / TOTP**), les **codes de récupération** et la **génération native de QR Codes (PNG et SVG)** dans vos applications.
+<p align="center">
+  <img src="assets/logoFlash2fa.png" alt="Flash2Fa Logo" width="220" />
+</p>
 
----
+**Flash2Fa** est une bibliothèque .NET moderne, ultra-rapide et sans aucune dépendance externe pour intégrer l'authentification à deux facteurs (**2FA / TOTP**), les **codes de récupération** et la **génération native de QR Codes (PNG et SVG)** dans vos applications.
 
 ## 📑 Sommaire
 
