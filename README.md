@@ -12,7 +12,7 @@
 
 **Flash2Fa** est une bibliothèque .NET moderne, ultra-rapide et sans aucune dépendance externe pour intégrer l'authentification à deux facteurs (**2FA / TOTP**), les **codes de récupération** et la **génération native de QR Codes (PNG et SVG)** dans vos applications.
 
-## 📑 Sommaire
+## Sommaire
 
 - [Pourquoi choisir Flash2Fa ?](#-pourquoi-choisir-flash2fa-)
 - [Installation](#-installation)
@@ -27,9 +27,7 @@
 - [Benchmarks & Performances](#-benchmarks--performances)
 - [Bonnes pratiques de sécurité](#-bonnes-pratiques-de-sécurité)
 
----
-
-## 💡 Pourquoi choisir Flash2Fa ?
+## Pourquoi choisir Flash2Fa ?
 
 Mettre en place la 2FA en .NET oblige souvent à assembler plusieurs bibliothèques (une pour le TOTP, une autre pour générer des QR Codes, et `SkiaSharp` ou `ImageSharp` pour le rendu d'image), ce qui alourdit le projet et pose des problèmes sous **Linux, Docker ou Native AOT**.
 
@@ -37,16 +35,14 @@ Mettre en place la 2FA en .NET oblige souvent à assembler plusieurs bibliothèq
 
 | Atout | Ce que ça change pour votre projet |
 | :--- | :--- |
-| **🚫 Zéro dépendance** | Tout est écrit en C# pur (HMAC, Base32, matrice QR Reed-Solomon, compression PNG 1-bit et tracé SVG). Aucune DLL native (`libSkiaSharp`, etc.) à déployer. |
-| **🚀 100 % Native AOT** | Zéro réflexion dynamique. Compilé et certifié sans aucun avertissement avec `PublishAot=true` et `TrimMode=full`. |
-| **⚡ Zéro allocation (`0 B`)** | Les opérations critiques (vérification TOTP, codes de secours, génération QR dans un buffer `Span<T>`) n'allouent **aucun octet** sur le tas managé. |
-| **🛡️ Zéro exception** | Toutes les API publiques suivent le pattern `Try` : retour booléen clair et code d'erreur explicite (`Flash2FaError`). |
-| **🎨 QR Codes sûrs & stylés** | Export **SVG** ou **PNG** avec personnalisation (taille, couleurs, `Square` / `Rounded` / `Dots`) et **correction automatique du contraste**. |
-| **🔐 Sécurité intégrée** | Comparaisons en temps constant (vectorisées SIMD / sans branchement), aléatoire via `RandomNumberGenerator` et hachage SHA-256 des codes de secours. |
+| **Zéro dépendance** | Tout est écrit en C# pur (HMAC, Base32, matrice QR Reed-Solomon, compression PNG 1-bit et tracé SVG). Aucune DLL native (`libSkiaSharp`, etc.) à déployer. |
+| **100 % Native AOT** | Zéro réflexion dynamique. Compilé et certifié sans aucun avertissement avec `PublishAot=true` et `TrimMode=full`. |
+| **Zéro allocation (`0 B`)** | Les opérations critiques (vérification TOTP, codes de secours, génération QR dans un buffer `Span<T>`) n'allouent **aucun octet** sur le tas managé. |
+| **Zéro exception** | Toutes les API publiques suivent le pattern `Try` : retour booléen clair et code d'erreur explicite (`Flash2FaError`). |
+| **QR Codes sûrs & stylés** | Export **SVG** ou **PNG** avec personnalisation (taille, couleurs, `Square` / `Rounded` / `Dots`) et **correction automatique du contraste**. |
+| **Sécurité intégrée** | Comparaisons en temps constant (vectorisées SIMD / sans branchement), aléatoire via `RandomNumberGenerator` et hachage SHA-256 des codes de secours. |
 
----
-
-## 📦 Installation
+## Installation
 
 Via la ligne de commande .NET :
 
@@ -62,9 +58,7 @@ Ou dans votre fichier `.csproj` :
 </ItemGroup>
 ```
 
----
-
-## 🚀 Démarrage rapide (Pour débuter en 2 minutes)
+## Démarrage rapide (Pour débuter en 2 minutes)
 
 ### 1. Activer la 2FA pour un utilisateur
 
@@ -110,14 +104,14 @@ string codeTypedByUser = "482910";
 // Par défaut, tolère un décalage d'horloge de ±30 secondes (1 créneau avant/après)
 if (Flash2FaService.VerifyCode(userSecretFromDb, codeTypedByUser, out long matchedTimeStep))
 {
-    // ✅ Code valide !
+    // Code valide !
     // Conseil sécurité : vérifiez que matchedTimeStep > lastUsedTimeStepFromDb
     // afin d'empêcher qu'un même code soit utilisé deux fois dans la même fenêtre de 30s.
     Console.WriteLine($"Connexion autorisée (créneau temporel : {matchedTimeStep})");
 }
 else
 {
-    // ❌ Code invalide ou expiré
+    // Code invalide ou expiré
     Console.WriteLine("Code d'authentification incorrect.");
 }
 ```
@@ -136,7 +130,7 @@ int matchedIndex = Flash2FaService.VerifyRecoveryCode(inputFromUser, userStoredH
 
 if (matchedIndex >= 0)
 {
-    // ✅ Code de secours valide !
+    // Code de secours valide !
     // Supprimez immédiatement l'empreinte à l'index 'matchedIndex' en base de données (usage unique)
     RemoveRecoveryHashAt(matchedIndex);
     Console.WriteLine("Connexion de secours réussie !");
@@ -147,9 +141,7 @@ else
 }
 ```
 
----
-
-## 🎨 Personnalisation des QR Codes (PNG & SVG)
+## Personnalisation des QR Codes (PNG & SVG)
 
 Vous pouvez adapter l'apparence du QR Code à la charte graphique de votre application tout en conservant une lisibilité garantie :
 
@@ -183,9 +175,7 @@ if (Flash2FaService.TryGenerateQrCodeBytes(
 }
 ```
 
----
-
-## ⚡ Utilisation avancée : Mode Zéro Allocation (`Span<T>`)
+## Utilisation avancée : Mode Zéro Allocation (`Span<T>`)
 
 Pour les serveurs à très fort trafic ou les environnements temps réel, **Flash2Fa** permet d'écrire les codes TOTP et les fichiers PNG/SVG directement dans vos propres buffers (`stackalloc` ou `ArrayPool<byte>`) sans allouer un seul octet sur le tas :
 
@@ -221,9 +211,7 @@ finally
 }
 ```
 
----
-
-## 🏗️ Exemple complet « Monde Réel » (API Minimal .NET)
+## Exemple complet « Monde Réel » (API Minimal .NET)
 
 Voici un exemple complet d'intégration dans une API Web ASP.NET Core gérant :
 1. L'activation de la 2FA (`POST /2fa/enable`)
@@ -360,9 +348,7 @@ class UserSecurityRecord
 }
 ```
 
----
-
-## 📚 Référence rapide de l'API
+## Référence rapide de l'API
 
 Toutes les méthodes sont exposées sur la classe statique `Flash2FaService` :
 
@@ -377,9 +363,7 @@ Toutes les méthodes sont exposées sur la classe statique `Flash2FaService` :
 | `VerifyRecoveryCode(...)` | Vérifie un code de secours en temps constant contre une empreinte ou une liste d'empreintes. |
 | `IsValidSecret(...)` | Vérifie qu'une clé Base32 est syntaxiquement valide et suffisamment longue. |
 
----
-
-## 📊 Benchmarks & Performances
+## Benchmarks & Performances
 
 Mesures réalisées avec **BenchmarkDotNet** sur **.NET 10.0** (Release) :
 
@@ -392,16 +376,14 @@ Mesures réalisées avec **BenchmarkDotNet** sur **.NET 10.0** (Release) :
 | **`QR Code: SVG Custom Dots (Span)`** | **145,2 µs** | ~6 880 QR/s | **0 B** (`-`) |
 | **`Setup: CreateSetup Complet (PNG + 8 Recovery)`** | **165,2 µs** | ~6 050 setups/s | **2 096 B** *(objets retournés)* |
 
-### 🔍 Comment lire ces résultats ?
+### Comment lire ces résultats ?
 
 * **`0 B` (`-`) sur les 5 opérations critiques :** Lorsqu'un utilisateur se connecte (`VerifyCode`), utilise un code de secours ou que votre serveur génère un QR Code dans un buffer, **pas un seul octet n'est alloué sur le tas**. Vos serveurs web ne subissent aucune pause du Garbage Collector, même sous forte charge.
 * **256 nanosecondes pour vérifier 8 codes de secours :** Normaliser la saisie utilisateur, calculer son empreinte SHA-256 et comparer les 8 empreintes en temps constant prend un quart de microseconde.
 * **~0,14 milliseconde pour un QR Code complet :** L'encodage de l'URI `otpauth://`, le calcul des codes correcteurs d'erreurs Reed-Solomon, l'évaluation des 8 masques ISO et la compression PNG Zlib (ou le tracé SVG vectoriel) s'exécutent en moins d'un sixième de milliseconde en pur C#.
 * **`2 096 B` sur `TryCreateSetup` :** Ce sont uniquement les objets finaux créés pour votre application (la chaîne Base64 du QR Code et les deux tableaux de 8 `string` pour les codes de secours).
 
----
-
-## 🔒 Bonnes pratiques de sécurité
+## Bonnes pratiques de sécurité
 
 1. **Ne stockez jamais les codes de secours en clair :** Enregistrez uniquement `setup.RecoveryCodes.HashedCodes` (les empreintes SHA-256) dans votre base de données et supprimez chaque empreinte dès qu'elle est utilisée.
 2. **Protégez la clé secrète en base de données :** Chiffrez `setup.Secret` au repos (par exemple via ASP.NET Core Data Protection ou AES-GCM) avant de l'enregistrer dans votre table utilisateurs.
