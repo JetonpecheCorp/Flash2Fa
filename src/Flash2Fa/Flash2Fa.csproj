@@ -31,9 +31,13 @@
     <PackageProjectUrl>hhttps://github.com/JetonpecheCorp/Flash2Fa</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JetonpecheCorp/Flash2Fa.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+
+    <PackageIcon>logoFlashCsv.png</PackageIcon>
+    <Copyright>Copyright © 2026 Jetonpeche. All rights reserved.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\assets\logoFlashCsv.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
