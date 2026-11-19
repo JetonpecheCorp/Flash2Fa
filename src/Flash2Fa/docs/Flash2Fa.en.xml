@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Flash2Fa</name>
+    </assembly>
+    <members>
+        <member name="T:Flash2Fa.QrModuleShape">
+            <summary>
+            Geometric shape of the modules composing the QR Code.
+            </summary>
+        </member>
+        <member name="F:Flash2Fa.QrModuleShape.Square">
+            <summary>Classic square modules (sharp and universal).</summary>
+        </member>
+        <member name="F:Flash2Fa.QrModuleShape.Rounded">
+            <summary>Square modules with slightly rounded corners.</summary>
+        </member>
+        <member name="F:Flash2Fa.QrModuleShape.Dots">
+            <summary>Modern circular dot modules.</summary>
+        </member>
+        <member name="T:Flash2Fa.QrImageFormat">
+            <summary>
+            Output image format generated for the QR Code.
+            </summary>
+        </member>
+        <member name="F:Flash2Fa.QrImageFormat.Png">
+            <summary>1-bit PNG raster image (universal compatibility).</summary>
+        </member>
+        <member name="F:Flash2Fa.QrImageFormat.Svg">
+            <summary>SVG vector image (minimal size, infinite sharpness).</summary>
+        </member>
+        <member name="T:Flash2Fa.QrCodeSize">
+            <summary>
+            Predefined QR Code size ensuring optimal scannability.
+            The integer value corresponds to the number of pixels per module.
+            </summary>
+        </member>
+        <member name="F:Flash2Fa.QrCodeSize.Small">
+            <summary>Compact format (~130x130 px), ideal for mobile or email.</summary>
+        </member>
+        <member name="F:Flash2Fa.QrCodeSize.Medium">
+            <summary>Standard format (~260x260 px), recommended for the web.</summary>
+        </member>
+        <member name="F:Flash2Fa.QrCodeSize.Large">
+            <summary>High-density format (~400x400 px), ideal for large screens.</summary>
+        </member>
+        <member name="T:Flash2Fa.TotpAlgorithm">
+            <summary>
+            HMAC hashing algorithm used for TOTP computation (RFC 6238).
+            </summary>
+        </member>
+        <member name="F:Flash2Fa.TotpAlgorithm.Sha1">
+            <summary>HMAC-SHA1 (universal standard for Google/Microsoft Authenticator).</summary>
+        </member>
+        <member name="F:Flash2Fa.TotpAlgorithm.Sha256">
+            <summary>HMAC-SHA256 (enhanced security).</summary>
+        </member>
+        <member name="F:Flash2Fa.TotpAlgorithm.Sha512">
+            <summary>HMAC-SHA512 (high security).</summary>
+        </member>
+        <member name="T:Flash2Fa.TotpDigits">
+            <summary>
+            Number of digits in the one-time authentication code.
+            </summary>
+        </member>
+        <member name="F:Flash2Fa.TotpDigits.Six">
+            <summary>Standard 6-digit code.</summary>
+        </member>
+        <member name="F:Flash2Fa.TotpDigits.Eight">
+            <summary>Extended 8-digit code.</summary>
+        </member>
+        <member name="T:Flash2Fa.Flash2FaError">
+            <summary>
+            Specific reason for a failure during a Flash2Fa operation (exception-free).
+            </summary>
+        </member>
+        <member name="F:Flash2Fa.Flash2FaError.None">
+            <summary>No error; the operation succeeded.</summary>
+        </member>
+        <member name="F:Flash2Fa.Flash2FaError.InvalidSecret">
+            <summary>The Base32 secret key is empty, malformed, or too short.</summary>
+        </member>
+        <member name="F:Flash2Fa.Flash2FaError.InvalidAccountInfo">
+            <summary>The issuer name or account name is empty.</summary>
+        </member>
+        <member name="F:Flash2Fa.Flash2FaError.PayloadTooLarge">
+            <summary>The payload exceeds the maximum QR Code capacity (Version 10).</summary>
+        </member>
+        <member name="F:Flash2Fa.Flash2FaError.BufferTooSmall">
+            <summary>The provided destination buffer is too small.</summary>
+        </member>
+        <member name="F:Flash2Fa.Flash2FaError.InvalidRecoveryCodeCount">
+            <summary>The requested number of recovery codes must be between 1 and 64.</summary>
+        </member>
+        <member name="T:Flash2Fa.Flash2FaService">
+            <summary>
+            Main entry point of Flash2Fa for Two-Factor Authentication (2FA),
+            QR Code generation (PNG/SVG), and TOTP &amp; recovery code validation.
+            100% exception-free (Try pattern) and 100% Native AOT compatible.
+            </summary>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryCreateSetup(System.String,System.String,Flash2Fa.TwoFactorSetup@,Flash2Fa.Flash2FaError@,Flash2Fa.QrImageFormat,System.Nullable{Flash2Fa.QrCodeOptions},System.Int32,Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits,System.Boolean)">
+            <summary>
+            Attempts to initialize a complete 2FA setup for a new user:
+            generates a random secret key, the Base64-encoded QR Code, and recovery codes.
+            </summary>
+            <param name="issuer">Application or service name displayed in the Authenticator app.</param>
+            <param name="accountName">Unique identifier for the user account (e.g., email address or username).</param>
+            <param name="setup">On success, contains the Base32 secret key, the Base64 QR Code, and the recovery codes.</param>
+            <param name="error">Error code indicating the reason for failure, or <see cref="F:Flash2Fa.Flash2FaError.None"/> on success.</param>
+            <param name="format">Desired image format for the QR Code (<see cref="F:Flash2Fa.QrImageFormat.Png"/> by default).</param>
+            <param name="options">Visual customization options for the QR Code (size, colors, shape, quiet zone). If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrCodeOptions.Default"/>.</param>
+            <param name="recoveryCodeCount">Number of recovery codes to generate (between 1 and 64, 8 by default).</param>
+            <param name="algorithm">HMAC algorithm used for TOTP computation (<see cref="F:Flash2Fa.TotpAlgorithm.Sha1"/> by default).</param>
+            <param name="digits">Number of digits in the temporary codes (<see cref="F:Flash2Fa.TotpDigits.Six"/> by default).</param>
+            <param name="includeDataUriPrefix">Whether to include the <c>data:image/...;base64,</c> prefix ready for an HTML <c>&lt;img&gt;</c> tag.</param>
+            <returns><see langword="true"/> if the setup was generated successfully; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateQrCodeBase64(System.ReadOnlySpan{System.Char},System.String,System.String,System.String@,Flash2Fa.Flash2FaError@,Flash2Fa.QrImageFormat,System.Nullable{Flash2Fa.QrCodeOptions},Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits,System.Boolean)">
+            <summary>
+            Attempts to generate a Base64-encoded QR Code from an existing secret key.
+            </summary>
+            <param name="secret">Base32-encoded secret key.</param>
+            <param name="issuer">Application or service issuer name.</param>
+            <param name="accountName">User account identifier.</param>
+            <param name="qrCodeBase64">On success, Base64 string representing the QR Code image.</param>
+            <param name="error">Error code indicating the reason for failure, or <see cref="F:Flash2Fa.Flash2FaError.None"/> on success.</param>
+            <param name="format">Desired image format (<see cref="F:Flash2Fa.QrImageFormat.Png"/> or <see cref="F:Flash2Fa.QrImageFormat.Svg"/>).</param>
+            <param name="options">Visual customization options for the QR Code. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrCodeOptions.Default"/>.</param>
+            <param name="algorithm">HMAC algorithm configured for this account (<see cref="F:Flash2Fa.TotpAlgorithm.Sha1"/> by default).</param>
+            <param name="digits">Number of digits configured for this account (<see cref="F:Flash2Fa.TotpDigits.Six"/> by default).</param>
+            <param name="includeDataUriPrefix">Whether to prefix the result with <c>data:image/...;base64,</c>.</param>
+            <returns><see langword="true"/> if the QR Code was generated; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateQrCodeBytes(System.ReadOnlySpan{System.Char},System.String,System.String,System.Byte[]@,Flash2Fa.Flash2FaError@,Flash2Fa.QrImageFormat,System.Nullable{Flash2Fa.QrCodeOptions},Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits)">
+            <summary>
+            Attempts to generate the raw binary image file (PNG or SVG) of the QR Code from an existing secret key.
+            </summary>
+            <param name="secret">Base32-encoded secret key.</param>
+            <param name="issuer">Application or service issuer name.</param>
+            <param name="accountName">User account identifier.</param>
+            <param name="qrCodeBytes">On success, byte array containing the complete PNG or SVG file.</param>
+            <param name="error">Error code indicating the reason for failure, or <see cref="F:Flash2Fa.Flash2FaError.None"/> on success.</param>
+            <param name="format">Desired image format (<see cref="F:Flash2Fa.QrImageFormat.Png"/> or <see cref="F:Flash2Fa.QrImageFormat.Svg"/>).</param>
+            <param name="options">Visual customization options for the QR Code. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrCodeOptions.Default"/>.</param>
+            <param name="algorithm">HMAC algorithm configured for this account.</param>
+            <param name="digits">Number of digits configured for this account.</param>
+            <returns><see langword="true"/> if the binary file was generated; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateQrCodeBytes(System.ReadOnlySpan{System.Char},System.String,System.String,System.Span{System.Byte},System.Int32@,Flash2Fa.Flash2FaError@,Flash2Fa.QrImageFormat,System.Nullable{Flash2Fa.QrCodeOptions},Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits)">
+            <summary>
+            Writes the raw binary stream (PNG or SVG) of the QR Code directly into the provided buffer with zero heap allocation.
+            </summary>
+            <param name="secret">Base32-encoded secret key.</param>
+            <param name="issuer">Application or service issuer name.</param>
+            <param name="accountName">User account identifier.</param>
+            <param name="destination">Target buffer into which the image bytes are written.</param>
+            <param name="bytesWritten">Number of bytes actually written into <paramref name="destination"/>.</param>
+            <param name="error">Error code indicating the reason for failure, or <see cref="F:Flash2Fa.Flash2FaError.None"/> on success.</param>
+            <param name="format">Desired image format (<see cref="F:Flash2Fa.QrImageFormat.Png"/> or <see cref="F:Flash2Fa.QrImageFormat.Svg"/>).</param>
+            <param name="options">Visual customization options for the QR Code. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrCodeOptions.Default"/>.</param>
+            <param name="algorithm">HMAC algorithm configured for this account.</param>
+            <param name="digits">Number of digits configured for this account.</param>
+            <returns><see langword="true"/> if the image was written into <paramref name="destination"/>; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateCode(System.ReadOnlySpan{System.Char},System.String@,Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits)">
+            <summary>
+            Attempts to generate the current temporary authentication code (e.g., 6 digits) from the secret key.
+            </summary>
+            <param name="secret">Base32-encoded secret key.</param>
+            <param name="code">On success, string containing the 6- or 8-digit temporary code.</param>
+            <param name="algorithm">HMAC algorithm used (<see cref="F:Flash2Fa.TotpAlgorithm.Sha1"/> by default).</param>
+            <param name="digits">Number of digits in the code (<see cref="F:Flash2Fa.TotpDigits.Six"/> by default).</param>
+            <returns><see langword="true"/> if the secret key is valid and the code was generated; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateCode(System.ReadOnlySpan{System.Char},System.String@,System.Int32@,System.Nullable{System.DateTimeOffset},Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits)">
+            <summary>
+            Attempts to generate the temporary authentication code from the secret key and outputs
+            the number of remaining seconds before expiration (1 to 30s).
+            </summary>
+            <param name="secret">Base32-encoded secret key.</param>
+            <param name="code">On success, string containing the 6- or 8-digit temporary code.</param>
+            <param name="remainingSeconds">Number of seconds remaining before the next code rotation (between 1 and 30).</param>
+            <param name="timestamp">Optional reference timestamp. If <see langword="null"/>, uses <see cref="P:System.DateTimeOffset.UtcNow"/>.</param>
+            <param name="algorithm">HMAC algorithm used (<see cref="F:Flash2Fa.TotpAlgorithm.Sha1"/> by default).</param>
+            <param name="digits">Number of digits in the code (<see cref="F:Flash2Fa.TotpDigits.Six"/> by default).</param>
+            <returns><see langword="true"/> if the secret key is valid and the code was generated; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateCode(System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@,System.Int32@,System.Nullable{System.DateTimeOffset},Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits)">
+            <summary>
+            Writes the temporary authentication code directly into a <see cref="T:System.Span`1"/> buffer with zero memory allocation.
+            </summary>
+            <param name="secret">Base32-encoded secret key.</param>
+            <param name="destination">Target buffer of at least 6 or 8 characters.</param>
+            <param name="charsWritten">Number of characters written into <paramref name="destination"/>.</param>
+            <param name="remainingSeconds">Number of seconds remaining before the code expires (between 1 and 30).</param>
+            <param name="timestamp">Optional reference timestamp. If <see langword="null"/>, uses <see cref="P:System.DateTimeOffset.UtcNow"/>.</param>
+            <param name="algorithm">HMAC algorithm used (<see cref="F:Flash2Fa.TotpAlgorithm.Sha1"/> by default).</param>
+            <param name="digits">Number of digits in the code (<see cref="F:Flash2Fa.TotpDigits.Six"/> by default).</param>
+            <returns><see langword="true"/> if the code was written successfully; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.VerifyCode(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Int64@,System.Int32,Flash2Fa.TotpAlgorithm,Flash2Fa.TotpDigits)">
+            <summary>
+            Verifies the validity of a temporary code entered by the user with clock-skew tolerance.
+            </summary>
+            <param name="secret">User's Base32 secret key.</param>
+            <param name="code">6- or 8-digit code entered by the user.</param>
+            <param name="matchedTimeStep">Time step that validated the code (store this value to prevent code reuse).</param>
+            <param name="toleranceSteps">Number of 30s steps tolerated before and after the current time (1 by default = ±30s).</param>
+            <param name="algorithm">Expected HMAC algorithm (<see cref="F:Flash2Fa.TotpAlgorithm.Sha1"/> by default).</param>
+            <param name="digits">Expected number of digits (<see cref="F:Flash2Fa.TotpDigits.Six"/> by default).</param>
+            <returns><see langword="true"/> if the code is valid; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.IsValidSecret(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Indicates whether the provided string is a syntactically valid and sufficiently long Base32 secret key.
+            </summary>
+            <param name="secret">Base32 character span to validate.</param>
+            <returns><see langword="true"/> if the secret key is valid; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.TryGenerateRecoveryCodes(System.Int32,Flash2Fa.RecoveryCodes@)">
+            <summary>
+            Attempts to generate a new set of human-readable recovery codes and their SHA-256 hashes.
+            </summary>
+            <param name="count">Number of codes to generate (must be between 1 and 64).</param>
+            <param name="recoveryCodes">On success, contains the plaintext codes and their SHA-256 hashes.</param>
+            <returns><see langword="true"/> if <paramref name="count"/> is valid and the codes were generated; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.GenerateRecoveryCodes">
+            <summary>
+            Generates a standard set of 8 human-readable recovery codes and their SHA-256 hashes.
+            </summary>
+            <returns>A <see cref="T:Flash2Fa.RecoveryCodes"/> structure containing the 8 plaintext codes and their hashed digests.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.VerifyRecoveryCode(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <summary>
+            Verifies a user-entered recovery code in constant time against a stored SHA-256 hash.
+            </summary>
+            <param name="userInputCode">Code entered by the user (case-, hyphen-, and space-insensitive).</param>
+            <param name="storedHash">Hexadecimal SHA-256 hash (64 characters) stored in the database.</param>
+            <returns><see langword="true"/> if the code matches the hash; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.Flash2FaService.VerifyRecoveryCode(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String})">
+            <summary>
+            Verifies a recovery code in constant time against a list of stored hashes.
+            </summary>
+            <param name="userInputCode">Code entered by the user (case-, hyphen-, and space-insensitive).</param>
+            <param name="storedHashes">Collection of SHA-256 hashes still valid for this account.</param>
+            <returns>The index of the matching code in <paramref name="storedHashes"/> (0..N-1) so it can be invalidated immediately, or -1 if none match.</returns>
+        </member>
+        <member name="T:Flash2Fa.Internal.QrMatrix">
+            <summary>
+            Represents a QR Code matrix computed entirely on the stack (zero allocation).
+            Stores 1 byte per module (0 = light, 1 = dark) for O(1) access without bit-shifting.
+            </summary>
+        </member>
+        <member name="T:Flash2Fa.TwoFactorSetup">
+            <summary>
+            Complete result of a 2FA initialization for a new user.
+            </summary>
+            <param name="Secret">Base32-encoded secret key to encrypt and store in the database.</param>
+            <param name="QrCodeBase64">Base64-encoded QR Code image ready to display.</param>
+            <param name="RecoveryCodes">Set of plaintext and hashed recovery codes.</param>
+        </member>
+        <member name="M:Flash2Fa.TwoFactorSetup.#ctor(System.String,System.String,Flash2Fa.RecoveryCodes)">
+            <summary>
+            Complete result of a 2FA initialization for a new user.
+            </summary>
+            <param name="Secret">Base32-encoded secret key to encrypt and store in the database.</param>
+            <param name="QrCodeBase64">Base64-encoded QR Code image ready to display.</param>
+            <param name="RecoveryCodes">Set of plaintext and hashed recovery codes.</param>
+        </member>
+        <member name="P:Flash2Fa.TwoFactorSetup.Secret">
+            <summary>Base32-encoded secret key to encrypt and store in the database.</summary>
+        </member>
+        <member name="P:Flash2Fa.TwoFactorSetup.QrCodeBase64">
+            <summary>Base64-encoded QR Code image ready to display.</summary>
+        </member>
+        <member name="P:Flash2Fa.TwoFactorSetup.RecoveryCodes">
+            <summary>Set of plaintext and hashed recovery codes.</summary>
+        </member>
+        <member name="T:Flash2Fa.RecoveryCodes">
+            <summary>
+            Pair containing human-readable recovery codes and their SHA-256 hashes.
+            </summary>
+            <param name="PlainCodes">Plaintext codes to display once to the user.</param>
+            <param name="HashedCodes">SHA-256 hashes to save in the database.</param>
+        </member>
+        <member name="M:Flash2Fa.RecoveryCodes.#ctor(System.String[],System.String[])">
+            <summary>
+            Pair containing human-readable recovery codes and their SHA-256 hashes.
+            </summary>
+            <param name="PlainCodes">Plaintext codes to display once to the user.</param>
+            <param name="HashedCodes">SHA-256 hashes to save in the database.</param>
+        </member>
+        <member name="P:Flash2Fa.RecoveryCodes.PlainCodes">
+            <summary>Plaintext codes to display once to the user.</summary>
+        </member>
+        <member name="P:Flash2Fa.RecoveryCodes.HashedCodes">
+            <summary>SHA-256 hashes to save in the database.</summary>
+        </member>
+        <member name="T:Flash2Fa.QrColor">
+            <summary>
+            Represents a 24-bit RGB color for QR Code rendering.
+            </summary>
+            <param name="R">Red component (0 to 255).</param>
+            <param name="G">Green component (0 to 255).</param>
+            <param name="B">Blue component (0 to 255).</param>
+        </member>
+        <member name="M:Flash2Fa.QrColor.#ctor(System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Represents a 24-bit RGB color for QR Code rendering.
+            </summary>
+            <param name="R">Red component (0 to 255).</param>
+            <param name="G">Green component (0 to 255).</param>
+            <param name="B">Blue component (0 to 255).</param>
+        </member>
+        <member name="P:Flash2Fa.QrColor.R">
+            <summary>Red component (0 to 255).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrColor.G">
+            <summary>Green component (0 to 255).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrColor.B">
+            <summary>Blue component (0 to 255).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrColor.Black">
+            <summary>Pure black (#000000).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrColor.White">
+            <summary>Pure white (#FFFFFF).</summary>
+        </member>
+        <member name="M:Flash2Fa.QrColor.TryFromHex(System.ReadOnlySpan{System.Char},Flash2Fa.QrColor@)">
+            <summary>
+            Attempts to parse a hexadecimal color string ("#1E293B" or "1E293B") into an RGB color without throwing exceptions.
+            </summary>
+            <param name="hex">6-character hexadecimal string (with or without a <c>#</c> prefix).</param>
+            <param name="color">On success, the corresponding <see cref="T:Flash2Fa.QrColor"/>; otherwise the default value.</param>
+            <returns><see langword="true"/> if the hexadecimal string is valid; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Flash2Fa.QrColor.FromHexOrDefault(System.ReadOnlySpan{System.Char},Flash2Fa.QrColor)">
+            <summary>
+            Converts a hexadecimal string into an RGB color, or returns <paramref name="fallback"/> if the format is invalid.
+            </summary>
+            <param name="hex">6-character hexadecimal string (with or without a <c>#</c> prefix).</param>
+            <param name="fallback">Fallback color returned if <paramref name="hex"/> is invalid.</param>
+            <returns>The parsed color, or <paramref name="fallback"/> on failure.</returns>
+        </member>
+        <member name="T:Flash2Fa.QrCodeOptions">
+            <summary>
+            Visual customization options for the QR Code with automatic scannability enforcement.
+            </summary>
+            <param name="Size">Predefined QR Code size (pixels per module). <see cref="F:Flash2Fa.QrCodeSize.Medium"/> by default.</param>
+            <param name="Foreground">Color of the dark QR Code modules. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrColor.Black"/>.</param>
+            <param name="Background">Background color of the QR Code. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrColor.White"/>.</param>
+            <param name="Shape">Geometric shape of the data modules (<see cref="F:Flash2Fa.QrModuleShape.Square"/> by default).</param>
+            <param name="QuietZone">Safety margin around the QR Code in modules (clamped between 0 and 10, 4 by default).</param>
+            <param name="EnforceReadableContrast">Whether to automatically adjust the foreground color when contrast with the background is below 3.0:1 (<see langword="true"/> by default).</param>
+        </member>
+        <member name="M:Flash2Fa.QrCodeOptions.#ctor(Flash2Fa.QrCodeSize,System.Nullable{Flash2Fa.QrColor},System.Nullable{Flash2Fa.QrColor},Flash2Fa.QrModuleShape,System.Int32,System.Boolean)">
+            <summary>
+            Visual customization options for the QR Code with automatic scannability enforcement.
+            </summary>
+            <param name="Size">Predefined QR Code size (pixels per module). <see cref="F:Flash2Fa.QrCodeSize.Medium"/> by default.</param>
+            <param name="Foreground">Color of the dark QR Code modules. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrColor.Black"/>.</param>
+            <param name="Background">Background color of the QR Code. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrColor.White"/>.</param>
+            <param name="Shape">Geometric shape of the data modules (<see cref="F:Flash2Fa.QrModuleShape.Square"/> by default).</param>
+            <param name="QuietZone">Safety margin around the QR Code in modules (clamped between 0 and 10, 4 by default).</param>
+            <param name="EnforceReadableContrast">Whether to automatically adjust the foreground color when contrast with the background is below 3.0:1 (<see langword="true"/> by default).</param>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.Size">
+            <summary>Predefined QR Code size (pixels per module). <see cref="F:Flash2Fa.QrCodeSize.Medium"/> by default.</summary>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.Foreground">
+            <summary>Color of the dark QR Code modules. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrColor.Black"/>.</summary>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.Background">
+            <summary>Background color of the QR Code. If <see langword="null"/>, uses <see cref="P:Flash2Fa.QrColor.White"/>.</summary>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.Shape">
+            <summary>Geometric shape of the data modules (<see cref="F:Flash2Fa.QrModuleShape.Square"/> by default).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.QuietZone">
+            <summary>Safety margin around the QR Code in modules (clamped between 0 and 10, 4 by default).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.EnforceReadableContrast">
+            <summary>Whether to automatically adjust the foreground color when contrast with the background is below 3.0:1 (<see langword="true"/> by default).</summary>
+        </member>
+        <member name="P:Flash2Fa.QrCodeOptions.Default">
+            <summary>Default standard options (Black on White, square modules, medium size).</summary>
+        </member>
+    </members>
+</doc>
