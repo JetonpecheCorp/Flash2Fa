@@ -30,7 +30,7 @@
     <RepositoryUrl>https://github.com/JetonpecheCorp/Flash2Fa.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
-    <PackageIcon>logoFlashCsv.png</PackageIcon>
+    <PackageIcon>logoFlash2fa.png</PackageIcon>
     <Copyright>Copyright © 2026 Jetonpeche. All rights reserved.</Copyright>
   </PropertyGroup>
 
@@ -38,7 +38,7 @@
     <None Include="..\..\assets\logoFlash2fa.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\README.en.md" Pack="true" PackagePath="\" />
-    <None Include="docs\Flash2Fa.en.xml" Pack="true" PackagePath="lib\net10.0\en\" />
+    <None Include="docs\Flash2Fa.en.xml" Pack="true" PackagePath="lib\net10.0\en\Flash2Fa.xml" />
   </ItemGroup>
 
   <!-- Exposition des internes uniquement pour les tests unitaires -->
