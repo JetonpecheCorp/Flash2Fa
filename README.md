@@ -10,6 +10,8 @@
   <img src="assets/logoFlash2fa.png" alt="Flash2Fa Logo" width="220" />
 </p>
 
+[English documentation](https://github.com/JetonpecheCorp/Flash2fa/blob/main/README.en.md)
+
 **Flash2Fa** est une bibliothèque .NET moderne, ultra-rapide et sans aucune dépendance externe pour intégrer l'authentification à deux facteurs (**2FA / TOTP**), les **codes de récupération** et la **génération native de QR Codes (PNG et SVG)** dans vos applications.
 
 ## Sommaire
