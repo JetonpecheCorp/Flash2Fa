@@ -25,6 +25,9 @@ public readonly record struct RecoveryCodes(
 /// <summary>
 /// Représente une couleur RVB 24 bits pour le rendu du QR Code.
 /// </summary>
+/// <param name="R">Composante rouge (0 à 255).</param>
+/// <param name="G">Composante verte (0 à 255).</param>
+/// <param name="B">Composante bleue (0 à 255).</param>
 public readonly record struct QrColor(byte R, byte G, byte B)
 {
     /// <summary>Noir pur (#000000).</summary>
@@ -36,6 +39,9 @@ public readonly record struct QrColor(byte R, byte G, byte B)
     /// <summary>
     /// Tente de convertir une chaîne hexadécimale ("#1E293B" ou "1E293B") en couleur RVB sans lever d'exception.
     /// </summary>
+    /// <param name="hex">Chaîne hexadécimale de 6 caractères (avec ou sans préfixe <c>#</c>).</param>
+    /// <param name="color">En cas de succès, la couleur <see cref="QrColor"/> correspondante ; sinon la valeur par défaut.</param>
+    /// <returns><see langword="true"/> si la chaîne hexadécimale est valide ; sinon <see langword="false"/>.</returns>
     public static bool TryFromHex(ReadOnlySpan<char> hex, out QrColor color)
     {
         color = default;
@@ -62,6 +68,9 @@ public readonly record struct QrColor(byte R, byte G, byte B)
     /// <summary>
     /// Convertit une chaîne hexadécimale en couleur RVB, ou retourne <paramref name="fallback"/> si le format est invalide.
     /// </summary>
+    /// <param name="hex">Chaîne hexadécimale de 6 caractères (avec ou sans préfixe <c>#</c>).</param>
+    /// <param name="fallback">Couleur de repli retournée si <paramref name="hex"/> n'est pas valide.</param>
+    /// <returns>La couleur convertie, ou <paramref name="fallback"/> en cas d'échec.</returns>
     public static QrColor FromHexOrDefault(ReadOnlySpan<char> hex, QrColor fallback)
         => TryFromHex(hex, out QrColor color) ? color : fallback;
 
@@ -82,6 +91,12 @@ public readonly record struct QrColor(byte R, byte G, byte B)
 /// <summary>
 /// Options de personnalisation visuelle du QR Code avec sécurité automatique de scannabilité.
 /// </summary>
+/// <param name="Size">Taille prédéfinie du QR Code (nombre de pixels par module). <see cref="QrCodeSize.Medium"/> par défaut.</param>
+/// <param name="Foreground">Couleur des modules foncés du QR Code. Si <see langword="null"/>, utilise <see cref="QrColor.Black"/>.</param>
+/// <param name="Background">Couleur d'arrière-plan du QR Code. Si <see langword="null"/>, utilise <see cref="QrColor.White"/>.</param>
+/// <param name="Shape">Forme géométrique des modules de données (<see cref="QrModuleShape.Square"/> par défaut).</param>
+/// <param name="QuietZone">Marge de sécurité autour du QR Code en nombre de modules (bornée entre 0 et 10, 4 par défaut).</param>
+/// <param name="EnforceReadableContrast">Indique s'il faut corriger automatiquement la couleur de premier plan lorsque le contraste avec le fond est inférieur à 3,0:1 (<see langword="true"/> par défaut).</param>
 public readonly record struct QrCodeOptions(
     QrCodeSize Size = QrCodeSize.Medium,
     QrColor? Foreground = null,
