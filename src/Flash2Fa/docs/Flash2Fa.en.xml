@@ -386,6 +386,9 @@
         <member name="P:Flash2Fa.QrCodeOptions.EnforceReadableContrast">
             <summary>Whether to automatically adjust the foreground color when contrast with the background is below 3.0:1 (<see langword="true"/> by default).</summary>
         </member>
+        <member name="M:Flash2Fa.QrCodeOptions.#ctor">
+            <summary>Initializes the default standard options (Black on White, square modules, medium size, 4-module quiet zone).</summary>
+        </member>
         <member name="P:Flash2Fa.QrCodeOptions.Default">
             <summary>Default standard options (Black on White, square modules, medium size).</summary>
         </member>

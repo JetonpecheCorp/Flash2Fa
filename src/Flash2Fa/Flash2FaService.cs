@@ -12,7 +12,7 @@ namespace Flash2Fa;
 /// </summary>
 public static class Flash2FaService
 {
-    private const int DefaultRenderBufferSize = 64 * 1024;
+    private const int DefaultRenderBufferSize = 128 * 1024;
 
     /// <summary>
     /// Tente d'initialiser une nouvelle configuration 2FA complète pour un utilisateur :

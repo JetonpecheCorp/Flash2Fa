@@ -47,10 +47,10 @@ internal static class QrRenderers
     public static bool TryRenderSvg(in QrMatrix matrix, QrCodeOptions options, Span<byte> destination, out int bytesWritten)
     {
         bytesWritten = 0;
-        var (fg, bg, quietZone) = options.ResolveSafeValues();
+        var (fg, bg, quietZone, scale) = options.ResolveSafeValues();
         int size = matrix.Size;
         int totalModules = size + quietZone * 2;
-        int pixelSize = totalModules * (int)options.Size;
+        int pixelSize = totalModules * scale;
 
         if (destination.Length < 256)
         {
@@ -183,8 +183,7 @@ internal static class QrRenderers
     public static bool TryRenderPng(in QrMatrix matrix, QrCodeOptions options, Span<byte> destination, out int bytesWritten)
     {
         bytesWritten = 0;
-        var (fg, bg, quietZone) = options.ResolveSafeValues();
-        int scale = (int)options.Size;
+        var (fg, bg, quietZone, scale) = options.ResolveSafeValues();
         int size = matrix.Size;
         int totalModules = size + quietZone * 2;
         int imgSize = totalModules * scale;
@@ -200,7 +199,7 @@ internal static class QrRenderers
         BuildShapeRowMasks(scale, options.Shape, customRowMasks[..scale]);
 
         byte[] rawScanlines = ArrayPool<byte>.Shared.Rent(rawScanlineSize);
-        byte[] compressedBuffer = ArrayPool<byte>.Shared.Rent(rawScanlineSize + 128);
+        byte[] compressedBuffer = ArrayPool<byte>.Shared.Rent(rawScanlineSize + (rawScanlineSize >> 2) + 128);
 
         try
         {

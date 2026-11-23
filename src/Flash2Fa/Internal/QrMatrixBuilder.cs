@@ -356,7 +356,7 @@ internal static class QrMatrixBuilder
         if (version >= 2)
         {
             int numAlign = version / 7 + 2;
-            int step = (version == 32) ? 26 : (size - 13) / (numAlign - 1) * 2;
+            int step = (size - 13) / (numAlign * 2 - 2) * 2;
             Span<int> alignPos = stackalloc int[8];
             alignPos[0] = 6;
             for (int i = numAlign - 1, pos = size - 7; i >= 1; i--, pos -= step)

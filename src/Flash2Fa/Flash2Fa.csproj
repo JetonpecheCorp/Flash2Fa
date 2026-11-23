@@ -16,7 +16,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>Flash2Fa</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Jetonpeche</Authors>
     <Description>High-performance, zero-dependency, zero-allocation, 100% Native AOT 2FA library for .NET 10+ (TOTP RFC 6238, SVG/PNG QR codes, and SHA-256 recovery codes).</Description>
     <PackageTags>2fa;totp;qrcode;svg;png;aot;nativeaot;zero-allocation;security;authentication</PackageTags>

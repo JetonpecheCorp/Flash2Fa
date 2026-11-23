@@ -43,6 +43,11 @@ internal static class TotpEngine
         charsWritten = 0;
         remainingSeconds = 0;
 
+        if (digits is not (TotpDigits.Six or TotpDigits.Eight))
+        {
+            return false;
+        }
+
         int digitCount = (int)digits;
         if (destination.Length < digitCount || secret.IsEmpty || secret.Length > 256)
         {
@@ -75,6 +80,11 @@ internal static class TotpEngine
         TotpDigits digits = TotpDigits.Six)
     {
         matchedTimeStep = 0;
+        if (digits is not (TotpDigits.Six or TotpDigits.Eight))
+        {
+            return false;
+        }
+
         int digitCount = (int)digits;
 
         if (toleranceSteps < 0 || toleranceSteps > 10 || secret.IsEmpty || secret.Length > 256)

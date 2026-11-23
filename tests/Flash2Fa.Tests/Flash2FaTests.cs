@@ -233,4 +233,106 @@ public class Flash2FaTests
         Assert.False(QrColor.TryFromHex("ZZZZZZ", out _));
         Assert.False(QrColor.TryFromHex("#123", out _));
     }
+
+    [Fact]
+    public void QrCodeOptions_Default_HasValidSizeAndQuietZone()
+    {
+        QrCodeOptions opts = QrCodeOptions.Default;
+        Assert.Equal(QrCodeSize.Medium, opts.Size);
+        Assert.Equal(4, opts.QuietZone);
+        Assert.True(opts.EnforceReadableContrast);
+
+        bool ok = Flash2FaService.TryGenerateQrCodeBytes(
+            RfcSecretSha1,
+            "MonService",
+            "user@test.fr",
+            out byte[] svgBytes,
+            out Flash2FaError error,
+            QrImageFormat.Svg);
+
+        Assert.True(ok);
+        Assert.Equal(Flash2FaError.None, error);
+
+        string svg = Encoding.UTF8.GetString(svgBytes);
+        Assert.DoesNotContain("width=\"0\"", svg);
+        Assert.DoesNotContain("height=\"0\"", svg);
+    }
+
+    [Theory]
+    [InlineData(140, 45, 22)] // Version 7 : align [6, 22, 38]
+    [InlineData(160, 49, 24)] // Version 8 : align [6, 24, 42]
+    [InlineData(200, 53, 26)] // Version 9 : align [6, 26, 46]
+    [InlineData(240, 57, 28)] // Version 10 : align [6, 28, 50]
+    public void QrMatrixBuilder_HighVersions_PreserveFinderAndAlignmentPatterns(
+        int payloadLength,
+        int expectedSize,
+        int expectedCenterAlign)
+    {
+        byte[] payload = new byte[payloadLength];
+        Array.Fill(payload, (byte)'A');
+
+        Span<byte> buffer = stackalloc byte[Flash2Fa.Internal.QrMatrixBuilder.RequiredBufferSize];
+        bool ok = Flash2Fa.Internal.QrMatrixBuilder.TryEncode(payload, buffer, out Flash2Fa.Internal.QrMatrix matrix);
+
+        Assert.True(ok);
+        Assert.Equal(expectedSize, matrix.Size);
+
+        // Vérifier que les 3 Finder Patterns 7x7 sont 100% intacts (non écrasés par un Alignment Pattern)
+        AssertFinderIntact(in matrix, 0, 0);
+        AssertFinderIntact(in matrix, expectedSize - 7, 0);
+        AssertFinderIntact(in matrix, 0, expectedSize - 7);
+
+        // Vérifier le motif d'alignement central (expectedCenterAlign, expectedCenterAlign)
+        Assert.True(matrix.GetModule(expectedCenterAlign, expectedCenterAlign));
+        Assert.False(matrix.GetModule(expectedCenterAlign - 1, expectedCenterAlign));
+        Assert.True(matrix.GetModule(expectedCenterAlign - 2, expectedCenterAlign));
+
+        static void AssertFinderIntact(in Flash2Fa.Internal.QrMatrix m, int ox, int oy)
+        {
+            for (int dy = 0; dy < 7; dy++)
+            {
+                for (int dx = 0; dx < 7; dx++)
+                {
+                    int dist = Math.Max(Math.Abs(dx - 3), Math.Abs(dy - 3));
+                    bool expectedDark = dist != 2;
+                    Assert.Equal(expectedDark, m.GetModule(ox + dx, oy + dy));
+                }
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData(QrModuleShape.Square, QrCodeSize.Small)]
+    [InlineData(QrModuleShape.Rounded, QrCodeSize.Medium)]
+    [InlineData(QrModuleShape.Dots, QrCodeSize.Large)]
+    public void TryGenerateQrCodeBytes_AllShapesAndSizes_ProduceValidPngAndSvg(QrModuleShape shape, QrCodeSize size)
+    {
+        var opts = new QrCodeOptions(Size: size, Shape: shape, QuietZone: 4);
+        string longIssuer = "Flash2FaEnterpriseAuthenticationService";
+        string longAccount = "very.long.user.account.name+2fa@enterprise-domain.example.com";
+
+        // PNG + vérification décompression Zlib IDAT
+        Assert.True(Flash2FaService.TryGenerateQrCodeBytes(RfcSecretSha1, longIssuer, longAccount, out byte[] png, out Flash2FaError pngErr, QrImageFormat.Png, opts));
+        Assert.Equal(Flash2FaError.None, pngErr);
+        int width = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(16, 4));
+        int idatIndex = Encoding.ASCII.GetString(png).IndexOf("IDAT", StringComparison.Ordinal);
+        int idatLen = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(idatIndex - 4, 4));
+        using var ms = new MemoryStream(png, idatIndex + 4, idatLen);
+        using var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionMode.Decompress);
+        using var outMs = new MemoryStream();
+        zlib.CopyTo(outMs);
+        Assert.Equal(width * (1 + ((width + 7) >> 3)), outMs.Length);
+
+        // SVG
+        Assert.True(Flash2FaService.TryGenerateQrCodeBytes(RfcSecretSha1, longIssuer, longAccount, out byte[] svg, out Flash2FaError svgErr, QrImageFormat.Svg, opts));
+        Assert.Equal(Flash2FaError.None, svgErr);
+        Assert.EndsWith("</svg>", Encoding.UTF8.GetString(svg));
+    }
+
+    [Fact]
+    public void InvalidTotpDigitsEnum_ReturnsFalseSafely()
+    {
+        Assert.False(Flash2FaService.TryGenerateCode(RfcSecretSha1, out _, digits: default));
+        Assert.False(Flash2FaService.VerifyCode(RfcSecretSha1, "", out _, digits: default));
+    }
 }

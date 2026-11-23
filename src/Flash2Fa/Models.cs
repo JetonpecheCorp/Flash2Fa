@@ -105,14 +105,23 @@ public readonly record struct QrCodeOptions(
     int QuietZone = 4,
     bool EnforceReadableContrast = true)
 {
+    /// <summary>Initialise les options standard par défaut (Noir sur Blanc, carrés, taille moyenne, marge de 4 modules).</summary>
+    public QrCodeOptions()
+        : this(QrCodeSize.Medium, null, null, QrModuleShape.Square, 4, true)
+    {
+    }
+
     /// <summary>Options standard par défaut (Noir sur Blanc, carrés, taille moyenne).</summary>
     public static QrCodeOptions Default => new();
 
-    internal (QrColor EffectiveFg, QrColor EffectiveBg, int EffectiveQuietZone) ResolveSafeValues()
+    internal (QrColor EffectiveFg, QrColor EffectiveBg, int EffectiveQuietZone, int EffectiveScale) ResolveSafeValues()
     {
         QrColor bg = Background ?? QrColor.White;
         QrColor fg = Foreground ?? QrColor.Black;
         int quiet = Math.Clamp(QuietZone, 0, 10);
+        int scale = Size is QrCodeSize.Small or QrCodeSize.Medium or QrCodeSize.Large
+            ? (int)Size
+            : (int)QrCodeSize.Medium;
 
         if (EnforceReadableContrast)
         {
@@ -129,6 +138,6 @@ public readonly record struct QrCodeOptions(
             }
         }
 
-        return (fg, bg, quiet);
+        return (fg, bg, quiet, scale);
     }
 }
